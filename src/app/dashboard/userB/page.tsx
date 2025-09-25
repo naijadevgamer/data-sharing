@@ -1,23 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useDropzone } from "react-dropzone";
-import { apiClient } from "@/lib/apiClient";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import { useAuth } from "@/context/AuthContext";
 import Container from "@/components/Container";
 import { SubmissionCardSkeleton } from "@/components/LoadingSkeleton";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { useAuth } from "@/context/AuthContext";
+import { apiClient } from "@/lib/apiClient";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  Upload,
-  Download,
-  RefreshCw,
-  Image as ImageIcon,
-  BarChart3,
-  X,
-  CheckCircle,
   AlertCircle,
+  BarChart3,
+  CheckCircle,
+  Image as ImageIcon,
+  RefreshCw,
+  Upload,
+  X,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
 
 interface Submission {

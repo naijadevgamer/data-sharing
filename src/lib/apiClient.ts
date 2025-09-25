@@ -1,6 +1,4 @@
-// lib/apiClient.ts
 import { auth } from "./firebaseClient";
-import toast from "react-hot-toast";
 
 class ApiClient {
   private baseUrl: string;
@@ -32,8 +30,6 @@ class ApiClient {
     try {
       const token = await this.getAuthToken();
       const url = `${this.baseUrl}${endpoint}`;
-
-      console.log("Token:", token); // Debugging line
 
       const config: RequestInit = {
         headers: {
@@ -100,17 +96,14 @@ class ApiClient {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
 
-      // Track upload progress - FIXED: Proper progress calculation
       if (onProgress) {
         xhr.upload.addEventListener("progress", (event) => {
           if (event.lengthComputable) {
             const progress = Math.round((event.loaded / event.total) * 100);
             onProgress(progress);
-            console.log(`Upload progress: ${progress}%`); // Debug log
           }
         });
 
-        // Also track load events for completion
         xhr.upload.addEventListener("load", () => {
           onProgress(100);
         });
