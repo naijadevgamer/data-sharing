@@ -140,7 +140,7 @@ export default function UserADashboard() {
       };
 
       await apiClient.post("/submission", payload);
-      await fetchData(true); // Manual refresh after submission
+      // await fetchData(true); // Manual refresh after submission
       reset();
       toast.success("Data submitted successfully!");
     } catch (error) {
