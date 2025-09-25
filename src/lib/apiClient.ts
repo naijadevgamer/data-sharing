@@ -1,4 +1,6 @@
+// lib/apiClient.ts
 import { auth } from "./firebaseClient";
+import toast from "react-hot-toast";
 
 class ApiClient {
   private baseUrl: string;
@@ -7,20 +9,10 @@ class ApiClient {
     this.baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3005";
   }
 
-  // private async getAuthToken(): Promise<string> {
-  //   const user = auth.currentUser;
-  //   console.log("Current user in apiClient:", user);
-  //   if (!user) {
-  //     throw new Error("No authenticated user");
-  //   }
-  //   return await user.getIdToken();
-  // }
-
   private async getAuthToken(): Promise<string | undefined> {
     let user = auth.currentUser;
 
     if (!user) {
-      // Wait for Firebase to restore the user
       user = await new Promise((resolve, reject) => {
         const unsubscribe = auth.onAuthStateChanged((u) => {
           unsubscribe();
@@ -29,34 +21,49 @@ class ApiClient {
         });
       });
     }
-    return await user?.getIdToken();
 
-    // Use the modular function from Firebase v9+
-    // return getIdToken(user);
+    return await user?.getIdToken();
   }
 
-  private async request(endpoint: string, options: RequestInit = {}) {
-    const token = await this.getAuthToken();
-    console.log("Using token:", token);
-    const url = `${this.baseUrl}${endpoint}`;
-    console.log("Request URL:", url);
+  private async request(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<any> {
+    try {
+      const token = await this.getAuthToken();
+      const url = `${this.baseUrl}${endpoint}`;
 
-    const config: RequestInit = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        ...options.headers,
-      },
-      ...options,
-    };
+      console.log("Token:", token); // Debugging line
 
-    const response = await fetch(url, config);
+      const config: RequestInit = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          ...options.headers,
+        },
+        ...options,
+      };
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const response = await fetch(url, config);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          // Token might be expired, try to refresh
+          await auth.currentUser?.getIdToken(true);
+          return this.request(endpoint, options);
+        }
+
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || `HTTP error! status: ${response.status}`
+        );
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("API Request failed:", error);
+      throw error;
     }
-
-    return response.json();
   }
 
   async get(endpoint: string) {
@@ -81,24 +88,55 @@ class ApiClient {
     return this.request(endpoint, { method: "DELETE" });
   }
 
-  async uploadFile(endpoint: string, file: File) {
+  async uploadFile(
+    endpoint: string,
+    file: File,
+    onProgress?: (progress: number) => void
+  ) {
     const token = await this.getAuthToken();
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+
+      // Track upload progress - FIXED: Proper progress calculation
+      if (onProgress) {
+        xhr.upload.addEventListener("progress", (event) => {
+          if (event.lengthComputable) {
+            const progress = Math.round((event.loaded / event.total) * 100);
+            onProgress(progress);
+            console.log(`Upload progress: ${progress}%`); // Debug log
+          }
+        });
+
+        // Also track load events for completion
+        xhr.upload.addEventListener("load", () => {
+          onProgress(100);
+        });
+      }
+
+      xhr.addEventListener("load", () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            resolve(response);
+          } catch (error) {
+            resolve(xhr.responseText);
+          }
+        } else {
+          reject(new Error(`Upload failed with status ${xhr.status}`));
+        }
+      });
+
+      xhr.addEventListener("error", () => {
+        reject(new Error("Upload failed"));
+      });
+
+      xhr.open("POST", `${this.baseUrl}${endpoint}`);
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+      xhr.send(formData);
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
   }
 }
 
