@@ -9,10 +9,7 @@ import { apiClient } from "@/lib/apiClient";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/context/AuthContext";
 import Container from "@/components/Container";
-import {
-  ImageGridSkeleton,
-  SubmissionCardSkeleton,
-} from "@/components/LoadingSkeleton";
+import { ImageGridSkeleton } from "@/components/LoadingSkeleton";
 import {
   Upload,
   BarChart3,

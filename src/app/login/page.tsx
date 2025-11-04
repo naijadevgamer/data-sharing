@@ -52,8 +52,8 @@ export default function LoginPage() {
   };
 
   const demoCredentials = [
-    { role: "User A", email: "usera@example.com", password: "password123" },
-    { role: "User B", email: "userb@example.com", password: "password123" },
+    { role: "User A", email: "usera@example.com", password: "test1234" },
+    { role: "User B", email: "userb@example.com", password: "test1234" },
   ];
 
   return (

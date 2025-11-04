@@ -55,7 +55,7 @@ export default function UserBDashboard() {
 
     try {
       const res = await apiClient.get(
-        "/submission/latest/SvTdrfODk0VMcCkM2nswoZ54wzn2"
+        `/submission/latest/${process.env.NEXT_PUBLIC_USER_A_ID}`
       );
       setLatestSubmission(res);
       if (isManualRefresh) {
@@ -112,7 +112,7 @@ export default function UserBDashboard() {
         };
 
         await apiClient.uploadFile(
-          "/images/upload/SvTdrfODk0VMcCkM2nswoZ54wzn2",
+          `/images/upload/${process.env.NEXT_PUBLIC_USER_A_ID}`,
           file,
           updateProgress
         );

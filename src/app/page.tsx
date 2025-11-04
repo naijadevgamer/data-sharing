@@ -73,8 +73,9 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-6 sm:mb-8 max-w-4xl mx-auto px-4"
           >
-            Secure, real-time data sharing platform with enterprise-grade
-            encryption and cyberpunk-inspired interface
+            Secure, real-time data sharing platform. Collaboration tool built
+            for seamless interaction between two users. User A can share data
+            instantly, while User B can upload images for User A to view.
           </motion.p>
 
           <motion.div
@@ -86,11 +87,11 @@ export default function LandingPage() {
             <Link
               href="/login"
               className="group relative overflow-hidden bg-gradient-to-r from-cyber-blue to-cyber-purple px-6 py-3 sm:px-8 sm:py-4 rounded-full font-semibold text-base sm:text-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue focus:ring-offset-2 focus:ring-offset-dark-bg cursor-pointer w-full sm:w-auto text-center"
-              aria-label="Launch DataSync Pro platform"
+              aria-label="Launch DataSync Pro App"
             >
               <span className="relative z-10 flex items-center justify-center sm:justify-start space-x-2">
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Launch Platform</span>
+                <span>Launch App</span>
               </span>
             </Link>
           </motion.div>
@@ -158,10 +159,11 @@ export default function LandingPage() {
               id="cta-heading"
               className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4"
             >
-              Ready to Transform Your Data Sharing?
+              Ready to Experience Effortless Collaboration?
             </h2>
             <p className="text-lg sm:text-xl text-gray-300 mb-6 sm:mb-8">
-              Join the future of secure enterprise collaboration
+              Connect, share, and exchange data securely between users in
+              real-time.
             </p>
             <Link
               href="/login"
@@ -190,20 +192,20 @@ export default function LandingPage() {
 const features = [
   {
     icon: Shield,
-    title: "Military-Grade Security",
+    title: "Secure Data Exchange",
     description:
-      "End-to-end encryption with zero-knowledge architecture ensuring your data remains private and secure.",
+      "Your shared data and uploaded files are encrypted to ensure privacy between users A and B.",
   },
   {
     icon: Upload,
-    title: "Seamless File Sharing",
+    title: "Image Upload & Sync",
     description:
-      "Drag-and-drop interface with real-time upload progress and automatic synchronization.",
+      "User B can upload images that appear instantly on User A’s dashboard with real-time sync.",
   },
   {
     icon: Users,
-    title: "Role-Based Access",
+    title: "Two-User Collaboration",
     description:
-      "Granular permission controls with different user roles and access levels for maximum security.",
+      "Built around a simple flow between two users — one shares data, the other contributes files — for efficient teamwork.",
   },
 ];
